@@ -2,15 +2,19 @@
 CCFLAGS= -g -c
 LDFLAGS= -g -o
 
-SOURCES = $(wildcard *.s)
-OBJECTS = $(SOURCES:.s=.o)
-TARGET =base
+CSOURCES = $(wildcard *.c)
+SSOURCES = $(wildcard *.s )
+SOBJECTS = $(SSOURCES:.s=.o)
+COBJECTS = $(CSOURCES:.s=.o)
 
-$(TARGET): $(OBJECTS)                 
-		$(CC) $(CCFLAGS) $(SOURCES)
-		${CC} $(LDFLAGS) $@ $^    
+base: $(SOBJECTS)                 
+		$(CC) $(CCFLAGS) $(SSOURCES)
+		${CC} $(LDFLAGS) $@ $^ -lwayland-client -lEGL -lGLESv2 -lwayland-egl  
 
+sandbox: $(COBJECTS)                 
+		$(CC) $(CCFLAGS) $(CSOURCES)
+		${CC} $(LDFLAGS) $@ $^ -lwayland-client -lEGL -lGLESv2 -lwayland-egl  
 clean:
-	rm *.o $(TARGET)
+	rm *.o base sandbox 
 
 
