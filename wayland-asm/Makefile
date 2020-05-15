@@ -1,8 +1,8 @@
 # . /opt/fslc-xwayland/2.5.3/environment-setup-armv7at2hf-neon-fslc-linux-gnueabi
-CCFLAGS= -g -c
-LDFLAGS= -g -o
+CCFLAGS= -g -c 
+LDFLAGS= -g -o 
 
-SOURCES = $(wildcard *.s )
+SOURCES = $(wildcard *.s *.c)
 OBJECTS = $(SOURCES:.s=.o)
 TARGET = wasm
 
