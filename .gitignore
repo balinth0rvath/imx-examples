@@ -54,4 +54,7 @@ dkms.conf
 *.swp
 
 wasm
+sandbox
+base
+tags
 
