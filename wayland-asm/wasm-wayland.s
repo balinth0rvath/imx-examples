@@ -1,4 +1,5 @@
 	.global display_connect
+	.global global_object_available
 
 display_connect:
 	STMDB SP!, {R1,R2,LR}
@@ -55,24 +56,38 @@ display_error:
 
 	.global display_disconnect
 display_disconnect:
-	STMDB SP!, {LR}
+	STMDB 	SP!, {LR}
 
-	LDR R2,	=display
-	LDR R0,	[R2]
-	BL wl_display_disconnect
-	LDR R0,	=msg_display_disconnected
-	BL printf
+	LDR 	R2,	=display
+	LDR 	R0,	[R2]
+	BL 		wl_display_disconnect
+	LDR 	R0,	=msg_display_disconnected
+	BL 		printf
 
-	LDMIA SP!, {PC}
+	LDMIA 	SP!, {PC}
 
 global_object_available:
+	push	{r7, lr}
+	sub		sp, #16
+	add		r7, sp, #0
+	str		r0, [r7, #12]
+	str		r1, [r7, #8]
+	str		r2, [r7, #4]
+	str		r3, [r7, #0]
+	ldr		r0, =msg_avail 
+	blx		printf
+	nop
+	adds	r7, #16
+	mov		sp, r7
+	pop		{r7, pc}
+
 	STMDB SP!, {R1-R7,LR}
 	
 	LDMIA SP!, {R1-R7,LR}
+
 global_object_removed:
-	STMDB SP!, {R1-R7,LR}
-	
-	LDMIA SP!, {R1-R7,LR}
+	push	{r1, r2, r3, r4, r5, r6, r7, lr}
+   	pop		{r1, r2, r3, r4, r5, r6, r7, lr}
 	
 	.data
 
@@ -106,4 +121,7 @@ msg_display_error:
 	.asciz "Display error \n"
 msg_display_disconnected:
 	.asciz "Display disconnected \n"
+msg_avail:
+	.asciz "Avail \n"
+
 
