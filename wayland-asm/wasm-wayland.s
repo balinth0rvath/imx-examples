@@ -31,8 +31,7 @@ create_listener:
 add_listener:
 	LDR R4,	=registry
 	LDR R0,	[R4]
-	LDR R4,	=listener
-	LDR R1, [R4]
+	LDR R1,	=listener
 	LDR R4,	=display
 	LDR R2, [R4]
 	BL wl_registry_add_listener_wrapper
@@ -67,23 +66,16 @@ display_disconnect:
 	LDMIA 	SP!, {PC}
 
 global_object_available:
-	push	{r7, lr}
-	sub		sp, #16
-	add		r7, sp, #0
-	str		r0, [r7, #12]
-	str		r1, [r7, #8]
-	str		r2, [r7, #4]
-	str		r3, [r7, #0]
-	ldr		r0, =msg_avail 
-	blx		printf
-	nop
-	adds	r7, #16
-	mov		sp, r7
-	pop		{r7, pc}
+	STMDB SP!, {R1-R4,LR}
 
-	STMDB SP!, {R1-R7,LR}
-	
-	LDMIA SP!, {R1-R7,LR}
+	LDR		R0, =msg_avail 
+	MOV		R1,	R2
+	MOV		R2,	R3
+	MOV		R3,	R4	
+	BLX		printf
+	NOP
+
+	LDMIA SP!, {R1-R4,PC}
 
 global_object_removed:
 	push	{r1, r2, r3, r4, r5, r6, r7, lr}
@@ -122,6 +114,6 @@ msg_display_error:
 msg_display_disconnected:
 	.asciz "Display disconnected \n"
 msg_avail:
-	.asciz "Avail \n"
+	.asciz "Registry interface found: name=%i interface=%s version=%i \n"
 
 
