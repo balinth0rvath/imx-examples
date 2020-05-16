@@ -1,58 +1,68 @@
+/*************************************************
+ * display_connect                               * 
+ *                                               *
+ * -Connect to wayland display server            *
+ * -Create and register listener functions       *
+ * -Dispath display                              *
+ *************************************************/
 	.global display_connect
-	.global global_object_available
-
 display_connect:
-	STMDB SP!, {R1,R2,LR}
+	STMDB 	SP!, {R1,R2,LR}
 
-	MOV R0,	#0
-	BL 	wl_display_connect	
-	CMP R0, #0
-	BEQ display_error
-	LDR R2, =display
-	STR R0, [R2]
-	LDR R0, =msg_display_connected
-	BL 	printf	
-	MOV	R0,	#0
+	MOV 	R0,	#0
+	BL 		wl_display_connect	
+	CMP 	R0, #0
+	BEQ 	display_error
+	LDR 	R2, =display
+	STR 	R0, [R2]
+	LDR 	R0, =msg_display_connected
+	BL 		printf	
+	MOV		R0,	#0
 
 get_registry:
-	LDR R2, =display
-	LDR R0, [R2]
-	BL wl_display_get_registry_wrapper
-	LDR R2, =registry
-	STR R0, [R2]
+	LDR 	R2, =display
+	LDR 	R0, [R2]
+	BL 		wl_display_get_registry_wrapper 
+	LDR 	R2, =registry
+	STR 	R0, [R2]
 	
 create_listener:
-	LDR R0, =listener
-	LDR R1, =global_object_available
-	LDR R2, =global_object_removed
-	STR R1,	[R0], #4
-	STR	R2, [R0]
+	LDR 	R0, =listener
+	LDR 	R1, =global_object_available
+	LDR 	R2, =global_object_removed
+	STR 	R1,	[R0], #4
+	STR		R2, [R0]
 
 add_listener:
-	LDR R4,	=registry
-	LDR R0,	[R4]
-	LDR R1,	=listener
-	LDR R4,	=display
-	LDR R2, [R4]
-	BL wl_registry_add_listener_wrapper
+	LDR 	R4,	=registry
+	LDR 	R0,	[R4]
+	LDR 	R1,	=listener
+	LDR 	R4,	=display
+	LDR 	R2, [R4]
+	BL 		wl_registry_add_listener_wrapper
 	
 dispatch:
-	LDR R2,	=display
-	LDR	R0,	[R2]
-	BL	wl_display_dispatch
-	LDR R2,	=display
-	LDR R0,	[R2]
-	BL	wl_display_roundtrip
+	LDR 	R2,	=display
+	LDR		R0,	[R2]
+	BL		wl_display_dispatch
+	LDR 	R2,	=display
+	LDR 	R0,	[R2]
+	BL		wl_display_roundtrip
 
 	LDMIA SP!, {R1,R2,PC}
 
 display_error:
-	LDR R0, =msg_display_error
-	BL	printf
-	MOV	R0,	#1	
+	LDR 	R0, =msg_display_error
+	BL		printf
+	MOV		R0,	#1	
 
-	LDMIA SP!, {R1,R2,PC}
+	LDMIA 	SP!, {R1,R2,PC}
 
+/*************************************************
+ * display_disconnect                            * 
+ *                                               *
+ * -Disconnect from wayland display server       *
+ *************************************************/
 	.global display_disconnect
 display_disconnect:
 	STMDB 	SP!, {LR}
@@ -65,6 +75,12 @@ display_disconnect:
 
 	LDMIA 	SP!, {PC}
 
+/*************************************************
+ * global_object_available                       * 
+ * global_object_removed                         *
+ *                                               *
+ * -Wayland registry callback functions          *
+ *************************************************/
 global_object_available:
 	STMDB SP!, {R1-R4,LR}
 
@@ -75,12 +91,13 @@ global_object_available:
 	BLX		printf
 	NOP
 
-	LDMIA SP!, {R1-R4,PC}
+	LDMIA 	SP!, {R1-R4,PC}
 
 global_object_removed:
 	push	{r1, r2, r3, r4, r5, r6, r7, lr}
    	pop		{r1, r2, r3, r4, r5, r6, r7, lr}
 	
+
 	.data
 
 /*************************************************
