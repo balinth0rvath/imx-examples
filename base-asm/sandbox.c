@@ -46,8 +46,8 @@ int main()
 	wl_registry_add_listener(registry, &listener, display);
 	wl_display_dispatch(display);
 	*/
-	char a[20] = {"wl_compositor"};
-	char b[20] = {"wl_seat"};
+	char a[30] = {"wl_compositor"};
+	char b[35] = {"wl_seat"};
 
 	if (strcmp(a,b)==0)
 	{

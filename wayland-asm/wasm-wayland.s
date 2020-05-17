@@ -84,9 +84,9 @@ display_disconnect:
 global_object_available:
 	STMDB SP!, {R1-R12,LR}
 
+search_for_compositor:
 	SUB		SP, SP, #32
-	LDR		R0, =id_wl_shell
-	LDMIA	R0, {R1-R4}
+	LDMIA	R3, {R1-R4}
 	STMIA	SP,	{R1-R4}
 	ADD		R7, SP, #16
 	LDR		R0, =id_wl_compositor
@@ -95,15 +95,24 @@ global_object_available:
 	MOV		R0,	SP
 	MOV		R1,	R7
 	BLX		strcmp
+	ADD		SP,	SP, #32
 	CMP		R0,	#0
 	BEQ		compositor_found
-	B		global_object_available_exit
+	B		search_for_shell
 
 compositor_found:
+	LDR 	R0,	=msg_compositor_found
+	BL		printf
+	LDR		R0,	[sp, #33]
+	LDR		R2,	=compositor
+	STR		R0,	[R2]
+	B		global_object_available_exit	
+search_for_shell:
 
-	NOP
+shell_found:
+
+
 global_object_available_exit:
-	ADD		SP,	SP, #32
 	LDMIA 	SP!, {R1-R12,PC}
 
 global_object_removed:
@@ -153,5 +162,8 @@ msg_display_disconnected:
 	.asciz "Display disconnected \n"
 msg_avail:
 	.asciz "Registry interface found: name=%i interface=%s version=%i \n"
+msg_compositor_found:
+	.asciz "Compositor found \n"
+
 
 
