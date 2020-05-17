@@ -82,16 +82,29 @@ display_disconnect:
  * -Wayland registry callback functions          *
  *************************************************/
 global_object_available:
-	STMDB SP!, {R1-R4,LR}
+	STMDB SP!, {R1-R12,LR}
 
-	LDR		R0, =msg_avail 
-	MOV		R1,	R2
-	MOV		R2,	R3
-	MOV		R3,	R4	
-	BLX		printf
+	SUB		SP, SP, #32
+	LDR		R0, =id_wl_shell
+	LDMIA	R0, {R1-R4}
+	STMIA	SP,	{R1-R4}
+	ADD		R7, SP, #16
+	LDR		R0, =id_wl_compositor
+	LDMIA	R0,	{R1-R4}
+	STMIA	R7,	{R1-R4}
+	MOV		R0,	SP
+	MOV		R1,	R7
+	BLX		strcmp
+	CMP		R0,	#0
+	BEQ		compositor_found
+	B		global_object_available_exit
+
+compositor_found:
+
 	NOP
-
-	LDMIA 	SP!, {R1-R4,PC}
+global_object_available_exit:
+	ADD		SP,	SP, #32
+	LDMIA 	SP!, {R1-R12,PC}
 
 global_object_removed:
 	push	{r1, r2, r3, r4, r5, r6, r7, lr}
@@ -120,6 +133,14 @@ surface:
 	.word 0x0
 shell_surface:
 	.word 0x0
+
+/*************************************************
+ * registry interface identifiers                * 
+ *************************************************/
+id_wl_compositor:
+	.asciz "wl_compositor"
+id_wl_shell:
+	.asciz "wl_shell"
 
 /*************************************************
  * Messages                                      * 
