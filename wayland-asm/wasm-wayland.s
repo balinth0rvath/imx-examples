@@ -83,7 +83,7 @@ display_disconnect:
  * -Wayland registry callback functions          *
  *************************************************/
 global_object_available:
-	STMDB SP!, {R1-R12,LR}
+	STMDB SP!, {R0-R12,LR}
 
 search_for_compositor:
 	strcmp_reg_lab 	R3 id_wl_compositor
@@ -95,7 +95,10 @@ search_for_compositor:
 compositor_found:
 	LDR 	R0,	=msg_compositor_found
 	BL		printf
-	LDR		R0,	[sp, #33]
+	LDR		R1,	[SP, #4]
+	LDR		R2,	[SP, #8]
+	LDR		R3,	[SP, #56]	
+	BL		wl_registry_bind_wrapper	
 	LDR		R2,	=compositor
 	STR		R0,	[R2]
 	B		global_object_available_exit	
@@ -111,7 +114,7 @@ shell_found:
 	BL		printf
 
 global_object_available_exit:
-	LDMIA 	SP!, {R1-R12,PC}
+	LDMIA 	SP!, {R0-R12,PC}
 
 global_object_removed:
 	push	{r1, r2, r3, r4, r5, r6, r7, lr}

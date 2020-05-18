@@ -17,3 +17,12 @@ void wl_registry_add_listener_wrapper(
 {
 	wl_registry_add_listener(registry, listener, display);
 }
+
+struct wl_compositor* wl_registry_bind_wrapper(
+						struct wl_registry* registry,
+						uint32_t name,
+						uint32_t version)
+{
+	return wl_registry_bind(registry, name, &wl_compositor_interface, version);	
+}
+
