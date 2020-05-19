@@ -97,7 +97,9 @@ compositor_found:
 	BL		printf
 	LDR		R0,	[SP, #4]
 	LDR		R1,	[SP, #8]	
-	LDR		R2, [sp, #56]
+	LDR		R2,=wl_compositor_interface
+	LDR		R3, [sp, #56]
+
 	BL		wl_registry_bind_wrapper	
 	LDR		R2,	=compositor
 	STR		R0,	[R2]
@@ -112,6 +114,13 @@ search_for_shell:
 shell_found:
 	LDR		R0,	=msg_shell_found
 	BL		printf
+	LDR		R0,	[SP, #4]
+	LDR		R1,	[SP, #8]	
+	LDR		R2,=wl_shell_interface
+	LDR		R3, [sp, #56]
+	BL		wl_registry_bind_wrapper	
+	LDR		R2,	=shell
+	STR		R0,	[R2]
 
 global_object_available_exit:
 	LDMIA 	SP!, {R0-R12,PC}

@@ -3,6 +3,7 @@
 
 #include <wayland-client.h>
 #include <stdio.h>
+#include <string.h>
 
 struct wl_display* display;
 struct wl_registry* registry;
@@ -19,7 +20,11 @@ void global_object_available(
 						uint32_t version)
 {
 	//printf("version: %x \n", version);
-	compositor = wl_registry_bind(registry, name, &wl_compositor_interface, version); 
+	if (strcmp(interface,"wl_compositor")==0)
+	{
+		compositor = wl_registry_bind(registry, name, &wl_compositor_interface, version); 
+		printf("Address of compositor inteface %x \n", compositor);
+	}
 }
 
 void global_object_removed(
@@ -40,6 +45,7 @@ int main()
 	registry= wl_display_get_registry(display);
 	wl_registry_add_listener(registry, &listener, display);
 	wl_display_dispatch(display);
+
 	return 0;
 }
 
