@@ -1,6 +1,20 @@
 .include "wasm-macro-utils.s"
+
 /*************************************************
- * display_connect                               * 
+ * Public functions                              * 
+ *												 *
+ * init_display_client							 *
+ * display_disconnect                            *
+ * init_egl										 *
+ *												 *
+ * Callbacks									 *
+ *												 *
+ * global_object_available						 *
+ * global_object_removed						 *
+ *************************************************/
+
+/*************************************************
+ * init_display_client                           * 
  *                                               *
  * -Connect to wayland display server            *
  * -Create and register listener functions       *
@@ -11,11 +25,11 @@
  *************************************************/
 
 	.global init_display_client
-init_display_client:
 
-display_connect:
+init_display_client:
 	STMDB 	SP!, {R1,R2,LR}
 
+display_connect:
 	MOV 	R0,	#0
 	BL 		wl_display_connect	
 	CMP 	R0, #0
@@ -89,27 +103,27 @@ set_toplevel:
 	ADD		R0,	#0
 	BL		wl_shell_surface_set_toplevel_wrapper
 
-normal_exit:
+init_display_client_normal_exit:
 	MOV		R0,	#0						@ success
 	LDMIA SP!, {R1,R2,PC}
 
 display_error:
 	LDR 	R0, =msg_display_error
-	B		error_exit
+	B		init_display_client_error_exit
 
 compositor_error:
 	LDR 	R0, =msg_compositor_error
-	B		error_exit
+	B		init_display_client_error_exit
 
 surface_error:
 	LDR		R0,	=msg_surface_error
-	B		error_exit
+	B		init_display_client_error_exit
 
 shell_surface_error:
 	LDR		R0,	=msg_shell_surface_error
-	B		error_exit
+	B		init_display_client_error_exit
 
-error_exit:
+init_display_client_error_exit:
 	BL		printf
 	MOV		R0,	#1	
 	LDMIA 	SP!, {R1,R2,PC}
@@ -184,6 +198,42 @@ global_object_removed:
 	push	{r1, r2, r3, r4, r5, r6, r7, lr}
    	pop		{r1, r2, r3, r4, r5, r6, r7, lr}
 	
+/*************************************************
+ * init_egl 		                             * 
+ *                                               *
+ * -Get egl display					             *
+ * -Initialize egl display				         *
+ * -Get egl configs					             *
+ * -Choose an egl config						 *
+ * -Create egl context							 * 
+ * -Create window								 *
+ * -Create egl surface							 *
+ * -Make surface current						 *
+ *************************************************/
+
+	.global	init_egl
+init_egl:
+	STMDB	SP!, {R1-R12,LR}
+
+get_egl_display:
+
+init_egl_display:
+
+get_egl_configs:
+
+choose_egl_config:
+
+create_egl_context:
+
+create_egl_window:
+
+create_egl_surface:
+
+make_surface_current:
+
+init_egl_normal_exit:
+	MOV		R0,	#0
+	LDMIA	SP!, {R1-R12,PC}
 
 	.data
 

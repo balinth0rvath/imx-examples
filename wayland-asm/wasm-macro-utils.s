@@ -1,4 +1,12 @@
 /*************************************************
+ * Macro utils 	                                 * 
+ *												 *
+ * strcmp_reg_lab								 *
+ *************************************************/
+
+/*************************************************
+ * strcmp_reg_lab								 *
+ *												 *
  * Calls strcmp with the two comparable strings  *
  * address. First must be in a register, second  *
  * from a string stored in text signed by label  *
@@ -7,6 +15,7 @@
  *************************************************/
 
 	.macro strcmp_reg_lab comp_reg comp_label
+
 	STMDB	SP!, {R1-R7}
 	SUB		SP, SP, #32
 	LDMIA	\comp_reg, {R1-R4}
