@@ -95,9 +95,9 @@ search_for_compositor:
 compositor_found:
 	LDR 	R0,	=msg_compositor_found
 	BL		printf
-	LDR		R1,	[SP, #4]
-	LDR		R2,	[SP, #8]
-	LDR		R3,	[SP, #56]	
+	LDR		R0,	[SP, #4]
+	LDR		R1,	[SP, #8]	
+	LDR		R2, [sp, #56]
 	BL		wl_registry_bind_wrapper	
 	LDR		R2,	=compositor
 	STR		R0,	[R2]
