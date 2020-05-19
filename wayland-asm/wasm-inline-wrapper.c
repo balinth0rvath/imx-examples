@@ -27,3 +27,21 @@ void* wl_registry_bind_wrapper(
 	return wl_registry_bind(registry, name, compositor_interface, version);	
 }
 
+struct wl_surface* wl_compositor_create_surface_wrapper(struct wl_compositor* compositor) 
+{
+	return wl_compositor_create_surface(compositor);
+} 
+
+struct wl_shell_surface* wl_shell_get_shell_surface_wrapper(struct wl_shell* shell,
+															struct wl_surface* surface)
+{
+	return wl_shell_get_shell_surface(shell, surface);
+}
+
+void wl_shell_surface_set_toplevel_wrapper(struct wl_shell_surface* shell_surface)
+{
+	return wl_shell_surface_set_toplevel(shell_surface);
+}
+
+
+

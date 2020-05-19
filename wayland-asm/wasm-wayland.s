@@ -5,7 +5,11 @@
  * -Connect to wayland display server            *
  * -Create and register listener functions       *
  * -Dispath display                              *
+ * -Create surface								 *
+ * -Create shell surface						 *
+ * -Set toplevel								 *
  *************************************************/
+
 	.global init_display_client
 init_display_client:
 
@@ -53,16 +57,37 @@ dispatch:
 	BL		wl_display_roundtrip
 
 check_compositor:
+	LDR		R2, =compositor
+	LDR		R0,	[R2]
+	CMP		R0,	#0
+	BEQ		compositor_error
 
 create_surface:
+	LDR		R2,	=compositor
+	LDR		R0,	[R2]	
+	BL		wl_compositor_create_surface_wrapper
 
 check_surface:
+	CMP		R0,	#0
+	BEQ		surface_error
+	LDR		R2,	=surface
+	STR		R0,	[R2]
 
 create_shell_surface:
+	MOV		R1,	R0
+	LDR		R2,	=shell
+	LDR		R0,	[R2]
+	BL		wl_shell_get_shell_surface_wrapper
 
 check_shell_surface:
+	CMP		R0,	#0
+	BEQ		shell_surface_error
+	LDR		R2,	=shell_surface
+	STR		R0,	[R2]
 
 set_toplevel:
+	ADD		R0,	#0
+	BL		wl_shell_surface_set_toplevel_wrapper
 
 normal_exit:
 	MOV		R0,	#0						@ success
