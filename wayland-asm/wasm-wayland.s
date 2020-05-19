@@ -6,7 +6,9 @@
  * -Create and register listener functions       *
  * -Dispath display                              *
  *************************************************/
-	.global display_connect
+	.global init_display_client
+init_display_client:
+
 display_connect:
 	STMDB 	SP!, {R1,R2,LR}
 
@@ -50,13 +52,41 @@ dispatch:
 	LDR 	R0,	[R2]
 	BL		wl_display_roundtrip
 
+check_compositor:
+
+create_surface:
+
+check_surface:
+
+create_shell_surface:
+
+check_shell_surface:
+
+set_toplevel:
+
+normal_exit:
+	MOV		R0,	#0						@ success
 	LDMIA SP!, {R1,R2,PC}
 
 display_error:
 	LDR 	R0, =msg_display_error
+	B		error_exit
+
+compositor_error:
+	LDR 	R0, =msg_compositor_error
+	B		error_exit
+
+surface_error:
+	LDR		R0,	=msg_surface_error
+	B		error_exit
+
+shell_surface_error:
+	LDR		R0,	=msg_shell_surface_error
+	B		error_exit
+
+error_exit:
 	BL		printf
 	MOV		R0,	#1	
-
 	LDMIA 	SP!, {R1,R2,PC}
 
 /*************************************************
@@ -162,18 +192,28 @@ id_wl_shell:
 	.asciz "wl_shell"
 
 /*************************************************
- * Messages                                      * 
+ * Info Messages                                 * 
  *************************************************/
 msg_display_connected:
-	.asciz "Display connected \n"
-msg_display_error:
-	.asciz "Display error \n"
+	.asciz "  - Display connected \n"
 msg_display_disconnected:
-	.asciz "Display disconnected \n"
+	.asciz "  - Display disconnected \n"
 msg_avail:
-	.asciz "Registry interface found: name=%i interface=%s version=%i \n"
+	.asciz "  - Registry interface found: name=%i interface=%s version=%i \n"
 msg_compositor_found:
-	.asciz "Compositor found \n"
+	.asciz "  - Compositor found \n"
 msg_shell_found:
-	.asciz "Shell found \n"
+	.asciz "  - Shell found \n"
+
+/*************************************************
+ * Error Messages                                * 
+ *************************************************/
+msg_display_error:
+	.asciz "  * Display error \n"
+msg_compositor_error:
+	.asciz "  * No compositor found \n"
+msg_surface_error:
+	.asciz "  * Cannot create surface \n"
+msg_shell_surface_error:
+	.asciz "  * Cannot create shell surface \n"
 
